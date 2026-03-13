@@ -3,6 +3,8 @@ package config
 import (
 	"os"
 	"strconv"
+
+	"github.com/joho/godotenv"
 )
 
 type Config struct {
@@ -16,6 +18,8 @@ type Config struct {
 }
 
 func Load() Config {
+	loadDotEnv()
+
 	return Config{
 		BackendPort:       getEnv("BACKEND_PORT", "8080"),
 		DatabaseURL:       getEnv("DATABASE_URL", "postgres://posuser:pospass@localhost:5432/posdb?sslmode=disable"),
@@ -25,6 +29,12 @@ func Load() Config {
 		MigrationsPath:    getEnv("MIGRATIONS_PATH", "./migrations"),
 		DBConnectRetries:  getEnvAsInt("DB_CONNECT_RETRIES", 20),
 	}
+}
+
+func loadDotEnv() {
+	// Prefer backend/.env when running the API from the backend directory,
+	// but also accept the root .env for Docker/local shared workflows.
+	_ = godotenv.Load(".env", "../.env")
 }
 
 func getEnv(key, fallback string) string {

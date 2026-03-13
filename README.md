@@ -46,6 +46,20 @@ Local-network retail POS and inventory MVP for small electronics shops.
 - Run `npm.cmd run format` to apply the ESLint-based formatter.
 - Run `npm.cmd run check` to execute typecheck, lint, and production build together.
 
+## Environment Files
+
+- Root [`.env.example`](C:/Users/User/projects/pos-system/.env.example) is the main sample for `docker compose`.
+- Standalone backend development uses [backend/.env.example](C:/Users/User/projects/pos-system/backend/.env.example):
+  - copy it to `backend/.env`
+  - backend will auto-load `.env` from `backend/.env` first, then fallback to the root `.env`
+- Standalone frontend development uses [frontend/.env.example](C:/Users/User/projects/pos-system/frontend/.env.example):
+  - copy it to `frontend/.env`
+  - Nuxt reads this automatically when started from the `frontend` directory
+- Recommended workflow:
+  - Docker/Nginx stack: use only root `.env`
+  - `go run` backend locally: use `backend/.env`
+  - `npm run dev` frontend locally: use `frontend/.env`
+
 ## Key flows
 
 - Add or edit products from `/products`

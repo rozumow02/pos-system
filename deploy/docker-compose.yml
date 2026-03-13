@@ -43,7 +43,7 @@ services:
     restart: unless-stopped
     environment:
       NUXT_PUBLIC_API_BASE: ${NUXT_PUBLIC_API_BASE:-/api}
-      NUXT_API_SERVER_BASE: http://backend:8080/api
+      NUXT_API_SERVER_BASE: ${NUXT_API_SERVER_BASE:-http://backend:8080/api}
       HOST: 0.0.0.0
       PORT: 3000
     depends_on:
