@@ -1,0 +1,27 @@
+{
+  "name": "pos-system-frontend",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "postinstall": "nuxt prepare",
+    "dev": "nuxt dev --host 0.0.0.0 --port 3000",
+    "build": "nuxt build",
+    "start": "node .output/server/index.mjs",
+    "typecheck": "vue-tsc --noEmit",
+    "lint": "eslint .",
+    "format": "eslint . --fix",
+    "check": "npm run typecheck && npm run lint && npm run build"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "nuxt": "4.1.1"
+  },
+  "devDependencies": {
+    "@nuxt/eslint": "^1.9.0",
+    "eslint": "^9.36.0",
+    "typescript": "^5.9.2",
+    "vue-tsc": "^3.1.1"
+  }
+}
