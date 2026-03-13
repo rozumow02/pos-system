@@ -1,27 +1,72 @@
+<script setup lang="ts">
+const { items: products, ensureProducts, fetchProducts } = useProducts()
+const { data, refresh } = useDashboard()
+const { topProducts, lowStock, refreshTopProducts, refreshLowStock } = useReports()
+
+const dateFrom = ref('')
+const dateTo = ref('')
+const errorMessage = ref('')
+
+const dashboard = computed(() => data.value)
+
+function currency(value: number) {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  }).format(value)
+}
+
+async function load() {
+  errorMessage.value = ''
+  try {
+    await Promise.all([
+      refresh(),
+      refreshTopProducts(dateFrom.value, dateTo.value, 10),
+      refreshLowStock(),
+      fetchProducts(),
+    ])
+  }
+  catch (error) {
+    errorMessage.value = error instanceof Error ? error.message : 'Failed to load reports'
+  }
+}
+
+await ensureProducts()
+await load()
+</script>
+
 <template>
   <section class="grid">
     <div class="page-header">
       <div>
-        <p class="eyebrow">Analytics</p>
+        <p class="eyebrow">
+          Analytics
+        </p>
         <h2>Reports</h2>
         <p>Review daily revenue, best sellers, and full inventory status.</p>
       </div>
-      <button class="btn-secondary" @click="load">Refresh</button>
+      <button class="btn-secondary" @click="load">
+        Refresh
+      </button>
     </div>
 
-    <div v-if="errorMessage" class="alert alert-error">{{ errorMessage }}</div>
+    <div v-if="errorMessage" class="alert alert-error">
+      {{ errorMessage }}
+    </div>
 
     <section class="panel">
       <div class="filters">
         <label>
           Date from
-          <input v-model="dateFrom" type="date" />
+          <input v-model="dateFrom" type="date">
         </label>
         <label>
           Date to
-          <input v-model="dateTo" type="date" />
+          <input v-model="dateTo" type="date">
         </label>
-        <button class="btn" @click="load">Apply filters</button>
+        <button class="btn" @click="load">
+          Apply filters
+        </button>
       </div>
     </section>
 
@@ -35,7 +80,9 @@
       <section class="panel">
         <div class="section-title">
           <div>
-            <p class="eyebrow">Performance</p>
+            <p class="eyebrow">
+              Performance
+            </p>
             <h2>Top products</h2>
           </div>
         </div>
@@ -43,16 +90,22 @@
           <div v-for="item in topProducts" :key="item.product_id" class="list-row">
             <strong>{{ item.name }}</strong>
             <p>{{ item.quantity_sold }} units sold</p>
-            <p class="muted">{{ currency(item.revenue) }}</p>
+            <p class="muted">
+              {{ currency(item.revenue) }}
+            </p>
           </div>
-          <p v-if="!topProducts.length" class="muted">No product sales found for this range.</p>
+          <p v-if="!topProducts.length" class="muted">
+            No product sales found for this range.
+          </p>
         </div>
       </section>
 
       <section class="panel">
         <div class="section-title">
           <div>
-            <p class="eyebrow">Inventory risk</p>
+            <p class="eyebrow">
+              Inventory risk
+            </p>
             <h2>Low stock</h2>
           </div>
         </div>
@@ -60,9 +113,13 @@
           <div v-for="item in lowStock" :key="item.id" class="list-row">
             <strong>{{ item.name }}</strong>
             <p>{{ item.stock }} units remaining</p>
-            <p class="muted">{{ currency(item.price) }}</p>
+            <p class="muted">
+              {{ currency(item.price) }}
+            </p>
           </div>
-          <p v-if="!lowStock.length" class="muted">No low stock alerts right now.</p>
+          <p v-if="!lowStock.length" class="muted">
+            No low stock alerts right now.
+          </p>
         </div>
       </section>
     </div>
@@ -70,7 +127,9 @@
     <section class="panel">
       <div class="section-title">
         <div>
-          <p class="eyebrow">Inventory</p>
+          <p class="eyebrow">
+            Inventory
+          </p>
           <h2>Inventory status</h2>
         </div>
       </div>
@@ -100,39 +159,3 @@
     </section>
   </section>
 </template>
-
-<script setup lang="ts">
-const { items: products, ensureProducts, fetchProducts } = useProducts()
-const { data, refresh } = useDashboard()
-const { topProducts, lowStock, refreshTopProducts, refreshLowStock } = useReports()
-
-const dateFrom = ref("")
-const dateTo = ref("")
-const errorMessage = ref("")
-
-const dashboard = computed(() => data.value)
-
-function currency(value: number) {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD"
-  }).format(value)
-}
-
-async function load() {
-  errorMessage.value = ""
-  try {
-    await Promise.all([
-      refresh(),
-      refreshTopProducts(dateFrom.value, dateTo.value, 10),
-      refreshLowStock(),
-      fetchProducts()
-    ])
-  } catch (error) {
-    errorMessage.value = error instanceof Error ? error.message : "Failed to load reports"
-  }
-}
-
-await ensureProducts()
-await load()
-</script>

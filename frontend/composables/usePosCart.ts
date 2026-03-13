@@ -1,4 +1,4 @@
-import type { Product } from "~/types"
+import type { Product } from '~/types'
 
 export interface CartItem {
   product_id: number
@@ -9,10 +9,10 @@ export interface CartItem {
 }
 
 export function usePosCart() {
-  const cart = useState<CartItem[]>("pos-cart", () => [])
+  const cart = useState<CartItem[]>('pos-cart', () => [])
 
   function addProduct(product: Product) {
-    const existing = cart.value.find((item) => item.product_id === product.id)
+    const existing = cart.value.find(item => item.product_id === product.id)
     if (existing) {
       if (existing.quantity < product.stock) {
         existing.quantity += 1
@@ -25,13 +25,14 @@ export function usePosCart() {
       name: product.name,
       price: product.price,
       stock: product.stock,
-      quantity: 1
+      quantity: 1,
     })
   }
 
   function updateQuantity(productId: number, quantity: number) {
-    const item = cart.value.find((entry) => entry.product_id === productId)
-    if (!item) return
+    const item = cart.value.find(entry => entry.product_id === productId)
+    if (!item)
+      return
     if (quantity <= 0) {
       removeProduct(productId)
       return
@@ -40,7 +41,7 @@ export function usePosCart() {
   }
 
   function removeProduct(productId: number) {
-    cart.value = cart.value.filter((item) => item.product_id !== productId)
+    cart.value = cart.value.filter(item => item.product_id !== productId)
   }
 
   function clearCart() {
@@ -57,6 +58,6 @@ export function usePosCart() {
     addProduct,
     updateQuantity,
     removeProduct,
-    clearCart
+    clearCart,
   }
 }

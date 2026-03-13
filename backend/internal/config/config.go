@@ -24,7 +24,7 @@ func Load() Config {
 		BackendPort:       getEnv("BACKEND_PORT", "8080"),
 		DatabaseURL:       getEnv("DATABASE_URL", "postgres://posuser:pospass@localhost:5432/posdb?sslmode=disable"),
 		LogLevel:          getEnv("LOG_LEVEL", "info"),
-		FrontendOrigin:    getEnv("FRONTEND_ORIGIN", "http://localhost"),
+		FrontendOrigin:    getEnv("FRONTEND_ORIGIN", "http://localhost,http://127.0.0.1,http://localhost:3000,http://127.0.0.1:3000"),
 		LowStockThreshold: getEnvAsInt("LOW_STOCK_THRESHOLD", 5),
 		MigrationsPath:    getEnv("MIGRATIONS_PATH", "./migrations"),
 		DBConnectRetries:  getEnvAsInt("DB_CONNECT_RETRIES", 20),
@@ -32,9 +32,8 @@ func Load() Config {
 }
 
 func loadDotEnv() {
-	// Prefer backend/.env when running the API from the backend directory,
-	// but also accept the root .env for Docker/local shared workflows.
-	_ = godotenv.Load(".env", "../.env")
+	// Accept both backend/.env and root .env regardless of the current working directory.
+	_ = godotenv.Load(".env", "backend/.env", "../.env")
 }
 
 func getEnv(key, fallback string) string {

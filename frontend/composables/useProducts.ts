@@ -1,18 +1,19 @@
-import type { Product, ProductListResponse } from "~/types"
+import type { Product, ProductListResponse } from '~/types'
 
 export function useProducts() {
-  const items = useState<Product[]>("products-cache", () => [])
-  const loading = useState<boolean>("products-loading", () => false)
-  const loaded = useState<boolean>("products-loaded", () => false)
+  const items = useState<Product[]>('products-cache', () => [])
+  const loading = useState<boolean>('products-loading', () => false)
+  const loaded = useState<boolean>('products-loaded', () => false)
 
-  async function fetchProducts(query = "") {
+  async function fetchProducts(query = '') {
     loading.value = true
     try {
       const response = await useApi<ProductListResponse>(`/products?q=${encodeURIComponent(query)}&limit=200`)
       items.value = response.items
       loaded.value = true
       return response.items
-    } finally {
+    }
+    finally {
       loading.value = false
     }
   }
@@ -30,10 +31,10 @@ export function useProducts() {
     }
 
     const normalized = query.toLowerCase()
-    return items.value.filter((product) =>
-      product.name.toLowerCase().includes(normalized) ||
-      (product.sku || "").toLowerCase().includes(normalized) ||
-      (product.barcode || "").toLowerCase().includes(normalized)
+    return items.value.filter(product =>
+      product.name.toLowerCase().includes(normalized)
+      || (product.sku || '').toLowerCase().includes(normalized)
+      || (product.barcode || '').toLowerCase().includes(normalized),
     )
   }
 
@@ -43,6 +44,6 @@ export function useProducts() {
     loaded,
     ensureProducts,
     fetchProducts,
-    searchProducts
+    searchProducts,
   }
 }
